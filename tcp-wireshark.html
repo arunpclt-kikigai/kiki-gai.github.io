@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>TCP Explained via Wireshark – Kiki Gai</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+</head>
+<body class="is-preload">
+
+<div id="wrapper">
+
+	<header id="header">
+		<span class="logo"><a href="index.html"><img src="images/logo.svg" alt="Logo" /></a></span>
+		<h1>TCP Explained via Wireshark</h1>
+		<p>Understand how TCP behaves through real packet captures</p>
+	</header>
+
+	<nav id="nav">
+		<ul>
+			<li><a href="index.html">Home</a></li>
+			<li><a href="career.html">Career Guidance</a></li>
+			<li><a href="technical.html">Technical Learnings</a></li>
+			<li><a href="about.html">About</a></li>
+		</ul>
+	</nav>
+
+	<div id="main">
+		<section class="main">
+			<header class="major">
+				<h2>TCP Concepts & Packet Analysis</h2>
+			</header>
+
+			<p><strong>Overview:</strong> This guide explains how TCP behaves on the wire using Wireshark, including the handshake process, sequence/acknowledgement tracking, retransmissions, window scaling, and how to interpret DUPACKs and SACKs.</p>
+
+			<h3>Part 1 – TCP vs UDP</h3>
+			<img src="images/tcp-img-1.png" alt="TCP vs UDP" style="max-width:100%;" />
+			<ul>
+				<li><strong>UDP</strong> is connectionless and lightweight, used for DNS, SNMP, etc.</li>
+				<li><strong>TCP</strong> is connection-oriented, uses state tracking, ACKs, congestion control, and teardown.</li>
+			</ul>
+
+			<h3>Part 2 – TCP 3-Way Handshake</h3>
+			<img src="images/tcp-img-2.png" alt="3-Way Handshake" style="max-width:100%;" />
+			<p>SYN → SYN-ACK → ACK. Use the TCP conversation filter in Wireshark to isolate this. Relative sequence numbers simplify viewing. Look for Window Size, MSS, SACK Permitted, and Window Scale in SYN packets.</p>
+
+			<h3>Part 3 – TCP Sequence Numbers</h3>
+			<img src="images/tcp-img-3.png" alt="TCP Sequence Numbers" style="max-width:100%;" />
+			<p>Each byte in TCP is tracked. Sequence number + segment length = next expected sequence number. Wireshark can display this using custom columns.</p>
+
+			<h3>Part 4 – Duplicate ACKs</h3>
+			<img src="images/tcp-img-4.png" alt="Duplicate ACKs" style="max-width:100%;" />
+			<p>DUPACKs are triggered when out-of-order packets are received. If you see many DUPACKs, it can signal latency or packet loss. SACK Left/Right edge show what was received out-of-order.</p>
+
+			<h3>Part 5 – Retransmissions</h3>
+			<img src="images/tcp-img-5.png" alt="Retransmission" style="max-width:100%;" />
+			<p>When no ACK is received, the sender retransmits after a timer expires. Observe Delta Time between packets to identify delay and retransmission threshold.</p>
+
+			<h3>To Be Continued:</h3>
+			<ul>
+				<li>TCP MSS vs MTU</li>
+				<li>Finding TCP delays</li>
+				<li>Slow file transfer analysis</li>
+			</ul>
+		</section>
+	</div>
+
+	<footer id="footer">
+		<section>
+			<h2>Connect</h2>
+			<dl class="alt">
+				<dt>Email</dt>
+				<dd><a href="mailto:you@example.com">you@example.com</a></dd>
+				<dt>GitHub</dt>
+				<dd><a href="https://github.com/arunpclt-kikigai">github.com/arunpclt-kikigai</a></dd>
+			</dl>
+		</section>
+		<p class="copyright">
+			&copy; Kiki Gai. Design by <a href="https://html5up.net">HTML5 UP</a>.
+		</p>
+	</footer>
+
+</div>
+
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/jquery.scrollex.min.js"></script>
+<script src="assets/js/jquery.scrolly.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+
+</body>
+</html>
