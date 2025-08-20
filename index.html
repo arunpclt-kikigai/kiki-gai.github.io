@@ -1,95 +1,85 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>KIKI-GAI</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f5f5f5;
-    }
-    header {
-      background-color: #202124;
-      padding: 20px;
-      text-align: center;
-    }
-    header h1 {
-      color: white;
-      margin: 0;
-    }
-    nav {
-      margin-top: 10px;
-    }
-    nav a {
-      margin: 0 15px;
-      color: #ffffff;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    section {
-      padding: 40px 20px;
-    }
-    .home-section {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      flex-wrap: wrap;
-    }
-    .card {
-      background-color: white;
-      padding: 20px;
-      width: 250px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      border-radius: 8px;
-      text-align: center;
-    }
-    .card h3 {
-      margin-bottom: 10px;
-    }
-    .about-section {
-      max-width: 800px;
-      margin: auto;
-      background-color: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-  </style>
-</head>
-<body>
+<!DOCTYPE HTML>
+<!--
+	Customized Stellar Template for Kiki Gai
+-->
+<html>
+	<head>
+		<title>Kiki Gai – Learn & Explore Security</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
 
-  <header>
-    <h1>Welcome to Kiki-Gai</h1>
-    <nav>
-      <a href="#home">Home</a>
-      <a href="#about">About</a>
-    </nav>
-  </header>
+		<!-- Wrapper -->
+			<div id="wrapper">
 
-  <section id="home">
-    <h2 style="text-align:center;">Explore</h2>
-    <div class="home-section">
-      <div class="card">
-        <h3>Career Guidance</h3>
-        <p>Get personalized advice, planning tips, and resources to shape your career journey.</p>
-      </div>
-      <div class="card">
-        <h3>Technical Learnings</h3>
-        <p>Dive into curated content on cybersecurity, networking, and emerging tech.</p>
-      </div>
-    </div>
-  </section>
+				<!-- Header -->
+					<header id="header" class="alt">
+						<span class="logo"><img src="images/logo.svg" alt="Kiki Gai Logo" /></span>
+						<h1>Kiki Gai</h1>
+						<p>Security, Networking & Career Guidance</p>
+					</header>
 
-  <section id="about" class="about-section">
-    <h2>About This Project</h2>
-    <p>
-      <strong>kiki-gai.com</strong> is a passion project focused on empowering individuals through technical knowledge and practical career insights.
-      Whether you're starting out, switching paths, or upskilling, this platform is here to guide you with real-world advice and curated resources.
-    </p>
-  </section>
+				<!-- Nav -->
+					<nav id="nav">
+						<ul>
+							<li><a href="#intro" class="active">Home</a></li>
+							<li><a href="#lab">Cybersecurity Lab</a></li>
+							<li><a href="#career">Career Guidance</a></li>
+							<li><a href="#notes">Technical Notes</a></li>
+						</ul>
+					</nav>
 
-</body>
-</html>
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Introduction -->
+							<section id="intro" class="main">
+								<div class="spotlight">
+									<div class="content">
+										<header class="major">
+											<h2>Welcome to Kiki Gai</h2>
+										</header>
+										<p>This is my digital home for everything I learn and build around cybersecurity, networking, and technology. Whether you're looking for career advice or hands-on technical deep-dives, you'll find something valuable here.</p>
+									</div>
+									<span class="image"><img src="images/pic01.jpg" alt="Home Lab" /></span>
+								</div>
+							</section>
+
+						<!-- Cybersecurity Lab -->
+							<section id="lab" class="main special">
+								<header class="major">
+									<h2>Cybersecurity Lab</h2>
+									<p>Insights from my home lab: pfSense, Proxmox, ZTNA, SIEM, endpoint monitoring, and real-world simulations.</p>
+								</header>
+							</section>
+
+						<!-- Career Guidance -->
+							<section id="career" class="main special">
+								<header class="major">
+									<h2>Career Guidance</h2>
+									<p>10+ years of industry experience shared as interview tips, resume advice, and breaking into cybersecurity roles.</p>
+								</header>
+							</section>
+
+						<!-- Technical Learnings -->
+							<section id="notes" class="main special">
+								<header class="major">
+									<h2>Technical Notes</h2>
+									<p>Linux, Networking, Security fundamentals, Zscaler/ZTNA, scripting, and more—shared in simple, practical language.</p>
+								</header>
+							</section>
+
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<section>
+							<h2>Contact</h2>
+							<dl class="alt">
+								<dt>Email</dt>
+								<dd><a href="mailto:you@example.com">you@example.com</a></dd>
+								<dt>GitHub</dt>
+								<dd><a href="https://github.com/yourusername">github.com/yourusername</a></dd>
