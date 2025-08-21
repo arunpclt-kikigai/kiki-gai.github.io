@@ -1,85 +1,348 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-	<title>TCP Explained via Wireshark – Kiki Gai</title>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-	<link rel="stylesheet" href="assets/css/main.css" />
-	<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+    <title>TCP Explained via Wireshark – Kiki Gai</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 </head>
 <body class="is-preload">
-
 <div id="wrapper">
 
-	<header id="header">
-		<span class="logo"><a href="index.html"><img src="images/logo.svg" alt="Logo" /></a></span>
-		<h1>TCP Explained via Wireshark</h1>
-		<p>Understand how TCP behaves through real packet captures</p>
-	</header>
+    <header id="header">
+        <span class="logo"><a href="index.html"><img src="images/logo.svg" alt="Logo" /></a></span>
+        <h1>TCP Explained via Wireshark</h1>
+        <p>Unaltered walkthrough with all technical content and images</p>
+    </header>
 
-	<nav id="nav">
-		<ul>
-			<li><a href="index.html">Home</a></li>
-			<li><a href="career.html">Career Guidance</a></li>
-			<li><a href="technical.html">Technical Learnings</a></li>
-			<li><a href="about.html">About</a></li>
-		</ul>
-	</nav>
+    <nav id="nav">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="career.html">Career Guidance</a></li>
+            <li><a href="technical.html">Technical Learnings</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
 
-	<div id="main">
-		<section class="main">
-			<header class="major">
-				<h2>TCP Concepts & Packet Analysis</h2>
-			</header>
+    <div id="main">
+        <section class="main">
+            <header class="major">
+                <h2>Full Tutorial</h2>
+            </header>
+            <pre style="white-space: pre-wrap; font-size: 0.95em;">TCP –Wireshark Tutorial 
 
-			<p><strong>Overview:</strong> This guide explains how TCP behaves on the wire using Wireshark, including the handshake process, sequence/acknowledgement tracking, retransmissions, window scaling, and how to interpret DUPACKs and SACKs.</p>
+Part 1 - TCP vs UDP
 
-			<h3>Part 1 – TCP vs UDP</h3>
-			<img src="images/tcp-img-1.png" alt="TCP vs UDP" style="max-width:100%;" />
-			<ul>
-				<li><strong>UDP</strong> is connectionless and lightweight, used for DNS, SNMP, etc.</li>
-				<li><strong>TCP</strong> is connection-oriented, uses state tracking, ACKs, congestion control, and teardown.</li>
-			</ul>
+UDP 
 
-			<h3>Part 2 – TCP 3-Way Handshake</h3>
-			<img src="images/tcp-img-2.png" alt="3-Way Handshake" style="max-width:100%;" />
-			<p>SYN → SYN-ACK → ACK. Use the TCP conversation filter in Wireshark to isolate this. Relative sequence numbers simplify viewing. Look for Window Size, MSS, SACK Permitted, and Window Scale in SYN packets.</p>
+UDP is very simple protocol, connectionless. 
 
-			<h3>Part 3 – TCP Sequence Numbers</h3>
-			<img src="images/tcp-img-3.png" alt="TCP Sequence Numbers" style="max-width:100%;" />
-			<p>Each byte in TCP is tracked. Sequence number + segment length = next expected sequence number. Wireshark can display this using custom columns.</p>
+Only Source Port, Destination Port, Length and Checksum in the UDP header. 
 
-			<h3>Part 4 – Duplicate ACKs</h3>
-			<img src="images/tcp-img-4.png" alt="Duplicate ACKs" style="max-width:100%;" />
-			<p>DUPACKs are triggered when out-of-order packets are received. If you see many DUPACKs, it can signal latency or packet loss. SACK Left/Right edge show what was received out-of-order.</p>
+An application will use it when they don’t need layer 4 protocol to do a lot of thinking
 
-			<h3>Part 5 – Retransmissions</h3>
-			<img src="images/tcp-img-5.png" alt="Retransmission" style="max-width:100%;" />
-			<p>When no ACK is received, the sender retransmits after a timer expires. Observe Delta Time between packets to identify delay and retransmission threshold.</p>
+Quick delivery, no ack, no congestion control etc
 
-			<h3>To Be Continued:</h3>
-			<ul>
-				<li>TCP MSS vs MTU</li>
-				<li>Finding TCP delays</li>
-				<li>Slow file transfer analysis</li>
-			</ul>
-		</section>
-	</div>
+Doesn’t mean UDP is a bad protocol – Even DNS, SNMP etc are ran over UDP
 
-	<footer id="footer">
-		<section>
-			<h2>Connect</h2>
-			<dl class="alt">
-				<dt>Email</dt>
-				<dd><a href="mailto:you@example.com">you@example.com</a></dd>
-				<dt>GitHub</dt>
-				<dd><a href="https://github.com/arunpclt-kikigai">github.com/arunpclt-kikigai</a></dd>
-			</dl>
-		</section>
-		<p class="copyright">
-			&copy; Kiki Gai. Design by <a href="https://html5up.net">HTML5 UP</a>.
-		</p>
-	</footer>
+TCP 
+
+Connection oriented protocol
+
+Stateful, maintains a state on each end. Each end is aware of this connection and dedicate resource to this 
+
+3-way handshake happens before actual data transfer
+
+Uses – Sequence Number, Acknowledge Number, Window Size, TCP options etc
+
+Congestion Control – TCP don’t sent data so fast that the other end gets overloaded, uses slow start where it starts sending less data initially and then increases the throttle as it receives acknowledgements
+
+Either FIN or RST is sent to teardown a TCP connection. TCP connection will not last for long (As TCP being stateful, both sides are going to dedicate resources)
+
+Part 2 - TCP - 3-way handshake
+
+How to filter handshake – go to SYN packet, right click  Conversation Filter  TCP 
+
+SYN
+
+Sequence number starts with a random number but Wireshark start with 0 (Relative sequence number) for our convenience
+
+Flag – SYN bit is set to 1 
+
+Window Size – 64240 - Advertising the size of my TCP receive buffer, here we can receive 64240 bytes unacknowledged. 
+
+Calculated Window Size – 64240 - If we are using Window Scaling, then that value is multiplied with Window Size (because the maximum value which we can get in Window Size is 65535, but in order to scale more we use Window Scaling TCP option) – We can utilize this in higher latency, higher bandwidth WAN connection. 
+
+MSS – 1460 - Maximum amount of bytes server side can put in a segment 
+
+Window Scale – 8 (2 ^8 = 256) So Window Size will be multiplied by 256 to get a new Calculated window size as this connection progress further 
+
+SACK Permitted – The client side is letting the server know that Selective Ack is permitted 
+
+TCP Length – 0 – Because there is no encapsulated data (Nothing is being sent) but ACK=1 in next message SYN-ACK indicate that it is acknowledging a ghost byte
+
+SYN-ACK
+
+Sequence Number will be 0 as we are not sending any encapsulated data 
+
+Acknowledged Number will be 1 (To ack the SYN which was sent)
+
+Flag – SYN is set to 1 and ACK is set to 1
+
+Window Size – 64240
+
+Calculated Window Size – 64240
+
+MSS – 1460, SACK Permitted 
+
+Window Scale is 7(2^7 = 128) Window size will be multiplied by 128 upon receiving successful ACKs
+
+ACK
+
+Sequence Number – 1 
+
+Acknowledgment Number – 1 
+
+Window Size value – 513 
+
+Calculated Window Size – 513 * 2 ^8 = 131328 
+
+TCP options are gone as it is already exchanged
+
+It’s important to Capture the scaling factor in TCP handshake so that we can actually calculate the window
+
+Also, from TCP handshake only we can understand the initial round-trip time (From TCP Delta) 
+
+Here .02689 is the delta time which was needed for the destination to respond to the SYN and then within .00015 delta time source responded back with ACK
+
+So, the round-trip time would be .02689 + .00015 = 0.02704, i.e., 27 milliseconds 
+
+Part 3 - How TCP Sequence Number works
+
+Add TCP segment length as Column (Right click on TCP segment Length and click on Add as a Column)
+
+Every Byte that is sent is tracked through Sequence Number. 
+
+If 100 Byte is sent, then the other end takes that number 100 and then add 1 to it, i.e., 101 becomes the Acknowledgement number. So, with that the Sender understands that the receiver has received that 100 Bytes which was sent. 
+
+The RAW sequence number is always a random number, but for our convenience Wireshark start Sequence Number with 0 so that it’s easy for us to track. 
+
+In TCP handshake SYN, though the TCP segment Length is 0, the next sequence number will be incremented by 1. It’s called Ghost byte. 
+
+There will also be a relative next sequence number in Wireshark which will be Sequence Number + Length (In the above 2nd figure, Sequence Number 1 + Length 214 = Next Sequence number 215) 
+
+For this study, we can add Sequence Number, Acknowledgement Number & Next Sequence Number as columns. If required we can save this as a profile like whenever we need this view, we can open it. 
+
+Starting with Packet 4 - Packet 4 – Client Hello - Len – 214, SEQ#1, Next SEQ# is 214 + 1 = 215 and ACK#1
+
+Now, it is expecting an ACK from the other side but didn’t receive any in 3 Sec (Check Delta Time), so it decided to Retransmit it again and that is Packet 5
+
+Now the ACK# we expect in the next ACK message will be 215(which is the next SEQ number value as well), so that is the Packet 6
+
+Packet 6 – Len – 0 (Because, it’s just an ACK message) but the SEQ# jumped to 4067 even when nothing is sent but the ACK# is correct which is 215
+
+This indicate that there could be some packet drops from the destination to source, the server was trying to send something in between which the client didn’t receive. 
+
+When the server side received that retransmission, it then waits for 2 seconds expecting the ACKs for the bytes sent till 4067 but it didn’t, so it retransmit with the least value that is 536 bytes. Usually when there is an MTU/MSS issue due to which the packet is not going through then it retransmit with the lowest value 536 assuming it will at least pass through 
+
+Packet – 7 – Hence the TCP segment length becomes 536, SEQ#1 and next SEQ# will be 536+1 =537, in ACK# it again confirms that it received everything up to #215. 
+
+Packet 8 – Now the client sent an empty ack saying it received up to 537. So, the server understood that the 536 it sent – it worked. So will again send another 536 bytes in the next packet
+
+Packet 9 – Server sent the client another 536 bytes, now SEQ# becomes 537 and the next SEQ# becomes 536+537 = 1073 and the ACK# is still 215 as the client has not sent any data after that. 
+
+Then the server kept sending the 536-segment length until it reaches that 4036 value which earlier it tried to send and the client will ack with whatever it is receiving. 
+
+The next expected SEQ# in Packet 12 was 1609 (Next SEQ# in packet 10) but it has sent #2145. The Client didn’t receive the SEQ#1609 but received SEQ#2145. Hence there is a hole is the receiver(client) queue. 
+
+Packet 13 - So it uses a DUPACK# and ACK#1609 is sent with SACK from SLE 2145 and SLR 2681 which means he have received up to 1609 and then client have successfully received from 2145 to 2681 but the 536 bytes between 1609 and 2145 is missing.  (Hence in Packet 17 the server retransmit it)
+
+By the time the client sent DUPACK server was sending rest of the packets 14,15 & 16 very fast and then it received the DUPACK and filled the whole with the Packet 17. 
+
+By packet 16 it sent all those 4067 bytes which it initially intended to send. 
+
+But the Client again on the other side was not receiving it so fast, so it started sending few DUPACKs again (Packet 18 & 19) and then suddenly it processed the packet 16 which has 4067 bytes then the client says okay, I’ve received everything up to 4067 (ACK#4067) in the packet 20.
+
+But since the client had already sent few DUPACKs before receiving the entire bytes up to 4067, the server will fill that hole by sending those missed data (actually not missed) so it retransmit without any need. That Retransmission which was not necessary is called as Spurious Retransmission. The name Spurious because that data was already sent and acknowledged. 
+
+Part 4 – Duplicate ACKs
+
+SEQ# and ACK# are not advanced, it’s just sending a duplicate Acknowledgement asking the other end to retransmit the missing bytes or the bytes which are not receiving till now in a communication.  
+
+Along with DUPACK, there will be SACK Left and Right Edge to mention 
+
+If you are seeing a lot of DUPACKs in a capture, that means there is either packet loss or latency in the network, that one of the ends or both are not receiving data in the correct order or some bytes are received very late due to latency. If you are getting DUPACKs on a cycle then it indicates we are having packet loss in the network. 
+
+ACK# in the DUPACK will indicate till which byte it received (Probably ordered) and then SLE to SLR will indicate the rest of the bytes which it has received (Probably out of order). So, the other end will have to retransmit from the ACK# to SLE#
+
+Part 5 - TCP Retransmission
+
+After the Packet 4 which is Client Hello, Client waited for the ACK from the other side but didn’t get any till 307 milliseconds and then it retransmitted. 
+
+So, the Retransmission timer here is around 307 milliseconds (Probably some multiple of the initial RTT in TCP handshake, i.e., 85 milliseconds)
+
+When sender sent something, it starts the Retransmission timer. Once this Retransmission timer expires, it is going to retransmit the data. 
+
+Part 6 - TCP – Receive Window (Window Size)
+
+2 Types of Windows – Receive Window & Sent Window 
+
+Receive Window (Window Size) – It means the maximum buffer that a receiver can handle without acknowledgement 
+
+In Most case servers will have more window size as Servers are sending data to clients. 
+
+Calculated Window Size – In order to make more throughput on high latency or higher bandwidth connection, the usual window scale is not enough. Hence, we use Window Scale option to increase the Window Size more than 65535 (which is the highest range that can be carried in a 16-bit (2 Bytes) Field in TCP header. 
+
+If Window Scale option is used in TCP and its 8, then the actual multiplier value will be 2^8=256. So, every time it gets acknowledgement, the window size value will be multiplied by 256. 
+
+We can find the Window Scale value only in the TCP handshake message, so it’s important to capture 3 Way handshake always. 
+
+In the above situation we can see that 10.0.0.1 is sending 1514 Length bytes to 192.168.1.1 and it just ack with 54 Length. You can see the calculated window for 192.168.1.1 getting reduced slowly and at 363 packet the TCP window becomes full. 
+
+Then 192.168.1.1 sends TCP Zero Window to the other end. 
+
+10.0.0.1 waits for some X delta time and send a Keep-Alive message to check if 192.168 is alive. Then its sends zero-window message to indicate its alive. 
+
+10.0.0.1 now, waits for 2X delta time and sends keep-alive, it replies with zero window. 
+
+And every time 10.0.0.1 receives ack for the keep-alive, it increments the wait time by doubling it from the previous wait time. 
+
+And finally, during the 377 packets, 192.168 has cleared all its buffer and given an ACK with available Window size. 
+
+Now 10.0.0.1 will continue to send 1514 bytes in the 379 Packet. 
+
+This is an example of slowness in the connection which happened on one side, using such way we can figure out where the delay is happening. 
+
+If you check the delta time, it almost waited for 16 sec to retransmit the data as it waited for the buffer to free
+
+Part 7 - [TCP Keep – Alive]
+
+On the selected packet in the above snap (Blue coloured line) – we can see that the Server – 10.0.0.1 just responded with an ACK to the 1514 + 89 bytes of data which was sent by the client – 160.186.214.39. The server hasn’t sent any data yet (It just sent 60 bytes of ACK) – Means the application on the server side is processing it. 
+
+The Client then waits for 45 seconds (Check the Delta) and then sends a [TCP Keep-Alive] but the server within the initial round-trip time .09 seconds (Delta in handshake) it replies back with a [TCP Keep-Alive ACK]
+
+So here the client was waiting for data from the server, but the server has not sent any data yet. Due to this client is just checking if the server is still alive and the client has 45 seconds as a keep alive timer set. 
+
+Also, one more thing to note here is that the server is responding to client within the initial round-trip time whenever the client sent keep alive – meaning there is no network issue here – so most probably this could be an issue with application processing the data slowly. 
+
+After waiting for some time, you can see finally the server send 572 bytes of data to the client. 
+
+So, we can conclude that keep alive are not necessarily sent when there is a network issue, it just indicates that the client or server is checking if the other end is still alive while one of the ends is processing the data. 
+
+Part – 8 - TCP – Window Scaling & Calculated Window size
+
+The maximum value in Window size is 65535 because its 16 bits in TCP header. 
+
+For higher latency and higher bandwidth, we would require even more window size. For that we use this TCP option called Window Scaling. 
+
+There will be a Window Scaling factor, it is powered with 2 to get the scale factor and the window size is multiplied by that factor to get the calculated Window size. 
+
+Window Scaling is exchanged during TCP handshake 	
+
+Window Scale can go up to 14 and then scale factor can be 16,384. 
+
+16,384 * 65535 = 1,07,37,25,440
+
+Hence, we can achieve 1 Gig through put. 
+
+Calculated window size is the actual Window Size, we can add that as a column in Wireshark while troubleshooting Zero Window issues and all. 
+
+Calculated window size keeps reducing if the TCP receiving buffer is not getting processed like when the application on server or client side is slow. 
+
+In such cases like in above capture, the calculated window size gets reduced as the data which was sent is not processed and at one stage the window becomes full and then its ACK with TCP zero window. So, the server keeps sending keep alive to check if the other side is alive and then finally when all data is processed then the data is sent. 
+
+Here you can see for Keep-alive, the other end is acknowledging with TCP zero window as its unable to process any more data in its receiving buffer. 
+
+If TCP handshake is missed, then Wireshark won’t show Calculated Window Size. In such cases, if we know the scaling factor, then we can manually set the Window scaling factor in Wireshark. 
+
+Part – 9 - TCP – FIN vs RST
+
+TCP – FIN – Graceful termination 
+
+Both sides will send FIN and then orderly shutdown. 
+
+Client and server have exchanged data which was required and now its idle after the purpose for which the connection was established. So now both sides will send FIN and terminate the session as those resources can be used for other purposes. 
+
+TCP- RESET – Aborted release, disrupted release
+
+Either side can send it. 
+
+Even in the first SYN, if the client sent a SYN over port 23 and if the server does not listen to port 23, server will simply send a RST to stop the connection right away as the server is not expecting any packet over port 23
+
+Here in the above trace, you can see the client initiate a SYN to server but server within .02 milliseconds respond with RST. 
+
+Then the client tries to retransmit that SYN again, now the Server respond with SYN-ACK. This time you can see Wireshark has indicated that the port number was already used as this connection was tried earlier without success. 
+
+So here, though there was an initial RST later the traffic went through and was success. 
+
+This could be most probably due to the destination unable to handle the traffic at that point of time, due to any fault with the application in destination or the destination server as hung. 
+
+Also, TTL value 64 on RST packet indicate that it didn’t even travel much hope. So it could be a Firewall giving the RST as it is unable to handle traffic at that point of time. (TTL value by default will be either 64, 128 or 255 etc. so if it has traversed across multiple Routers then we will see a TTL value for example like 55, 118, 240 etc. So here since it is 64 itself, we are sure that the packet has not travelled. 
+
+In the above figure you can see after receiving the encrypted data, the client initiating graceful termination with FIN then FIN-ACK, ACK (This is like orderly release)
+
+In above capture 13th packet, you can see that after Delta time 13 seconds, as the connection was idle, the client sends a FIN which is graceful termination but after that its not waiting for FIN-ACK, ACK instead its directly cleaning up the connection by sending RST, ACK. 
+
+In such scenarios like this and above RST is not a big issue but if there is a RST after your Client Hello or after sending initial HTTP request etc then there could be an issue with the network. 
+
+RSTs at the end are fine because that would be TCP cleaning up the connection after all data transmitting. 
+
+Part – 10 - TCP – SACK
+
+TCP send data in stream, so when a packet loss happens the receiver will get packets out of order with different sequence number, it will create a hole in the stream.
+
+After that when the receiver asks to retransmit the lost packet, in the actual scenario sender will have to retransmit the entire stream as TCP sends data in stream. 
+
+So, TCP came up with an option called Selective Acknowledgement to address this. 
+
+TCP will ask just to sent the lost packet using a Duplicate Acknowledgement or DUPACK with SACK values set (SLE & SLR)
+
+DUPACK will have the previous ACK number till the receiver received the data and then after that which packet was received, that sequence number will be mentioned in SLE value and till where it received it will be in SLR value. 
+
+Hence the sender will understand which packet exactly need to be resent. 
+
+In the left capture you can see in the 52nd packet the Seq is 45261 and Next seq is 46721 but the next packet sent from the server to client is seq 59861. 
+
+The client was supposed to receive the seq 46721, instead it received 59861. So here there is gap between 46721 & 59861.
+
+So, in the next packet – Client sends a DUPACK, that is it sends the ACK for 46721 (it has already send this ACK in packet 53) , In this DUPACK the client will mention I have received everything up to 46721 and then after that I have received 59861 to 61321 like in below capture. 
+
+Then the server still sends the next seq in packet 56, Seq 61321 and Next Seq 62781 but still client hasn’t received seq 46721 
+
+Again, another DUPACK#2 is sent, with ACK #46721 and then it increases the SLR to 62781, ie SLE 61321 & SLR 62781
+
+This repeats until the Fast retransmission happens and the client gets the seq number 46721, Next Seq # 48181
+
+Then the client ACKs with 48181 but still there is a hole so it sets the SACK SLE 59861 to 64241 until this hole gets filled. 
+
+Remaining :-
+
+TCP- MSS vs MTU
+
+Finding TCP Delays
+
+Tips & Tricks – What makes an application slow?
+
+Troubleshooting slow file transfer in Wireshark </pre>
+            <p><em>All related figures (tcp-img-1.png to tcp-img-26.png) should be uploaded into the <code>/images</code> folder and placed inline as needed.</em></p>
+        </section>
+    </div>
+
+    <footer id="footer">
+        <section>
+            <h2>Connect</h2>
+            <dl class="alt">
+                <dt>Email</dt>
+                <dd><a href="mailto:you@example.com">you@example.com</a></dd>
+                <dt>GitHub</dt>
+                <dd><a href="https://github.com/arunpclt-kikigai">github.com/arunpclt-kikigai</a></dd>
+            </dl>
+        </section>
+        <p class="copyright">
+            &copy; Kiki Gai. Design by <a href="https://html5up.net">HTML5 UP</a>.
+        </p>
+    </footer>
 
 </div>
 
@@ -90,6 +353,5 @@
 <script src="assets/js/breakpoints.min.js"></script>
 <script src="assets/js/util.js"></script>
 <script src="assets/js/main.js"></script>
-
 </body>
 </html>
