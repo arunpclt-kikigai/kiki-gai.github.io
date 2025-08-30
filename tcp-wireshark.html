@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>TCP Explained via Wireshark – Kiki Gai</title>
+    <title><strong>TCP Explained via Wireshark – Kiki Gai</strong>strong></title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <link rel="stylesheet" href="assets/css/main.css" />
@@ -12,7 +12,7 @@
 
     <header id="header">
         <span class="logo"><a href="index.html"><img src="images/logo.svg" alt="Logo" /></a></span>
-        <h1>TCP Explained via Wireshark</h1>
+        <h1><strong>TCP Explained via Wireshark</strong>strong></h1>
         <p>Final version – Full text and all embedded images</p>
     </header>
 
@@ -30,22 +30,26 @@
             <header class="major">
                 <h2>TCP Deep Dive</h2>
             </header>
-            <p>TCP –Wireshark Tutorial</p>
-<p>Part 1 - TCP vs UDP</p>
-<p>UDP</p>
-<p>UDP is very simple protocol, connectionless.</p>
-<p>Only Source Port, Destination Port, Length and Checksum in the UDP header.</p>
-<p>An application will use it when they don’t need layer 4 protocol to do a lot of thinking</p>
-<p>Quick delivery, no ack, no congestion control etc</p>
-<p>Doesn’t mean UDP is a bad protocol – Even DNS, SNMP etc are ran over UDP</p>
-<p>TCP</p>
-<p>Connection oriented protocol</p>
-<p>Stateful, maintains a state on each end. Each end is aware of this connection and dedicate resource to this</p>
-<p>3-way handshake happens before actual data transfer</p>
-<p>Uses – Sequence Number, Acknowledge Number, Window Size, TCP options etc</p>
-<p>Congestion Control – TCP don’t sent data so fast that the other end gets overloaded, uses slow start where it starts sending less data initially and then increases the throttle as it receives acknowledgements</p>
-<p>Either FIN or RST is sent to teardown a TCP connection. TCP connection will not last for long (As TCP being stateful, both sides are going to dedicate resources)</p>
-<p>Part 2 - TCP - 3-way handshake</p>
+            <p><strong>TCP –Wireshark Tutorial</strong>strong></p>
+<p><strong>Part 1 - TCP vs UDP</strong>strong></p>
+<p><strong>UDP</strong>strong></p>
+            <ul>
+<li>UDP is very simple protocol, connectionless.</li>
+<li>Only Source Port, Destination Port, Length and Checksum in the UDP header.</li>
+<li>An application will use it when they don’t need layer 4 protocol to do a lot of thinking</li>
+<li>Quick delivery, no ack, no congestion control etc</li>
+<li>Doesn’t mean UDP is a bad protocol – Even DNS, SNMP etc are ran over UDP</li>
+            </ul>
+<p><strong>TCP</strong>strong></p>
+            <ul>
+<li>Connection oriented protocol</p>
+<li>Stateful, maintains a state on each end. Each end is aware of this connection and dedicate resource to this</li>
+<li>3-way handshake happens before actual data transfer</li>
+<li>Uses – Sequence Number, Acknowledge Number, Window Size, TCP options etc</li>
+<li>Congestion Control – TCP don’t sent data so fast that the other end gets overloaded, uses slow start where it starts sending less data initially and then increases the throttle as it receives acknowledgements</li>
+<li>Either FIN or RST is sent to teardown a TCP connection. TCP connection will not last for long (As TCP being stateful, both sides are going to dedicate resources)</li>
+                 </ul>
+<p><strong>Part 2 - TCP - 3-way handshake</strong>strong></p>
 <p>How to filter handshake – go to SYN packet, right click  Conversation Filter  TCP</p>
 <p>SYN</p>
 <p>Sequence number starts with a random number but Wireshark start with 0 (Relative sequence number) for our convenience</p>
