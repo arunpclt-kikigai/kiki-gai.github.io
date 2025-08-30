@@ -13,7 +13,7 @@
     <header id="header">
         <span class="logo"><a href="index.html"><img src="images/logo.svg" alt="Logo" /></a></span>
         <h1>TCP Explained via Wireshark</h1>
-        <p>Full content including all original structure and explanation</p>
+        <p>Final version – Full text and all embedded images</p>
     </header>
 
     <nav id="nav">
@@ -28,7 +28,7 @@
     <div id="main">
         <section class="main">
             <header class="major">
-                <h2>Document Content</h2>
+                <h2>TCP Deep Dive</h2>
             </header>
             <p>TCP –Wireshark Tutorial</p>
 <p>Part 1 - TCP vs UDP</p>
@@ -71,6 +71,7 @@
 <p>Calculated Window Size – 513 * 2 ^8 = 131328</p>
 <p>TCP options are gone as it is already exchanged</p>
 <p>It’s important to Capture the scaling factor in TCP handshake so that we can actually calculate the window</p>
+<img src="images/tcp-img-1.png" alt="tcp-img-1" style="max-width:100%; margin: 1em 0;" />
 <p>Also, from TCP handshake only we can understand the initial round-trip time (From TCP Delta)</p>
 <p>Here .02689 is the delta time which was needed for the destination to respond to the SYN and then within .00015 delta time source responded back with ACK</p>
 <p>So, the round-trip time would be .02689 + .00015 = 0.02704, i.e., 27 milliseconds</p>
@@ -81,6 +82,7 @@
 <p>The RAW sequence number is always a random number, but for our convenience Wireshark start Sequence Number with 0 so that it’s easy for us to track.</p>
 <p>In TCP handshake SYN, though the TCP segment Length is 0, the next sequence number will be incremented by 1. It’s called Ghost byte.</p>
 <p>There will also be a relative next sequence number in Wireshark which will be Sequence Number + Length (In the above 2nd figure, Sequence Number 1 + Length 214 = Next Sequence number 215)</p>
+<img src="images/tcp-img-2.png" alt="tcp-img-2" style="max-width:100%; margin: 1em 0;" />
 <p>For this study, we can add Sequence Number, Acknowledgement Number &amp; Next Sequence Number as columns. If required we can save this as a profile like whenever we need this view, we can open it.</p>
 <p>Starting with Packet 4 - Packet 4 – Client Hello - Len – 214, SEQ#1, Next SEQ# is 214 + 1 = 215 and ACK#1</p>
 <p>Now, it is expecting an ACK from the other side but didn’t receive any in 3 Sec (Check Delta Time), so it decided to Retransmit it again and that is Packet 5</p>
@@ -102,6 +104,7 @@
 <p>SEQ# and ACK# are not advanced, it’s just sending a duplicate Acknowledgement asking the other end to retransmit the missing bytes or the bytes which are not receiving till now in a communication.</p>
 <p>Along with DUPACK, there will be SACK Left and Right Edge to mention</p>
 <p>If you are seeing a lot of DUPACKs in a capture, that means there is either packet loss or latency in the network, that one of the ends or both are not receiving data in the correct order or some bytes are received very late due to latency. If you are getting DUPACKs on a cycle then it indicates we are having packet loss in the network.</p>
+<img src="images/tcp-img-3.png" alt="tcp-img-3" style="max-width:100%; margin: 1em 0;" />
 <p>ACK# in the DUPACK will indicate till which byte it received (Probably ordered) and then SLE to SLR will indicate the rest of the bytes which it has received (Probably out of order). So, the other end will have to retransmit from the ACK# to SLE#</p>
 <p>Part 5 - TCP Retransmission</p>
 <p>After the Packet 4 which is Client Hello, Client waited for the ACK from the other side but didn’t get any till 307 milliseconds and then it retransmitted.</p>
@@ -114,6 +117,7 @@
 <p>Calculated Window Size – In order to make more throughput on high latency or higher bandwidth connection, the usual window scale is not enough. Hence, we use Window Scale option to increase the Window Size more than 65535 (which is the highest range that can be carried in a 16-bit (2 Bytes) Field in TCP header.</p>
 <p>If Window Scale option is used in TCP and its 8, then the actual multiplier value will be 2^8=256. So, every time it gets acknowledgement, the window size value will be multiplied by 256.</p>
 <p>We can find the Window Scale value only in the TCP handshake message, so it’s important to capture 3 Way handshake always.</p>
+<img src="images/tcp-img-4.png" alt="tcp-img-4" style="max-width:100%; margin: 1em 0;" />
 <p>In the above situation we can see that 10.0.0.1 is sending 1514 Length bytes to 192.168.1.1 and it just ack with 54 Length. You can see the calculated window for 192.168.1.1 getting reduced slowly and at 363 packet the TCP window becomes full.</p>
 <p>Then 192.168.1.1 sends TCP Zero Window to the other end.</p>
 <p>10.0.0.1 waits for some X delta time and send a Keep-Alive message to check if 192.168 is alive. Then its sends zero-window message to indicate its alive.</p>
@@ -122,6 +126,7 @@
 <p>And finally, during the 377 packets, 192.168 has cleared all its buffer and given an ACK with available Window size.</p>
 <p>Now 10.0.0.1 will continue to send 1514 bytes in the 379 Packet.</p>
 <p>This is an example of slowness in the connection which happened on one side, using such way we can figure out where the delay is happening.</p>
+<img src="images/tcp-img-5.png" alt="tcp-img-5" style="max-width:100%; margin: 1em 0;" />
 <p>If you check the delta time, it almost waited for 16 sec to retransmit the data as it waited for the buffer to free</p>
 <p>Part 7 - [TCP Keep – Alive]</p>
 <p>On the selected packet in the above snap (Blue coloured line) – we can see that the Server – 10.0.0.1 just responded with an ACK to the 1514 + 89 bytes of data which was sent by the client – 160.186.214.39. The server hasn’t sent any data yet (It just sent 60 bytes of ACK) – Means the application on the server side is processing it.</p>
@@ -141,6 +146,7 @@
 <p>Calculated window size is the actual Window Size, we can add that as a column in Wireshark while troubleshooting Zero Window issues and all.</p>
 <p>Calculated window size keeps reducing if the TCP receiving buffer is not getting processed like when the application on server or client side is slow.</p>
 <p>In such cases like in above capture, the calculated window size gets reduced as the data which was sent is not processed and at one stage the window becomes full and then its ACK with TCP zero window. So, the server keeps sending keep alive to check if the other side is alive and then finally when all data is processed then the data is sent.</p>
+<img src="images/tcp-img-6.png" alt="tcp-img-6" style="max-width:100%; margin: 1em 0;" />
 <p>Here you can see for Keep-alive, the other end is acknowledging with TCP zero window as its unable to process any more data in its receiving buffer.</p>
 <p>If TCP handshake is missed, then Wireshark won’t show Calculated Window Size. In such cases, if we know the scaling factor, then we can manually set the Window scaling factor in Wireshark.</p>
 <p>Part – 9 - TCP – FIN vs RST</p>
@@ -155,8 +161,11 @@
 <p>So here, though there was an initial RST later the traffic went through and was success.</p>
 <p>This could be most probably due to the destination unable to handle the traffic at that point of time, due to any fault with the application in destination or the destination server as hung.</p>
 <p>Also, TTL value 64 on RST packet indicate that it didn’t even travel much hope. So it could be a Firewall giving the RST as it is unable to handle traffic at that point of time. (TTL value by default will be either 64, 128 or 255 etc. so if it has traversed across multiple Routers then we will see a TTL value for example like 55, 118, 240 etc. So here since it is 64 itself, we are sure that the packet has not travelled.</p>
+<img src="images/tcp-img-7.png" alt="tcp-img-7" style="max-width:100%; margin: 1em 0;" />
 <p>In the above figure you can see after receiving the encrypted data, the client initiating graceful termination with FIN then FIN-ACK, ACK (This is like orderly release)</p>
+<img src="images/tcp-img-8.png" alt="tcp-img-8" style="max-width:100%; margin: 1em 0;" />
 <p>In above capture 13th packet, you can see that after Delta time 13 seconds, as the connection was idle, the client sends a FIN which is graceful termination but after that its not waiting for FIN-ACK, ACK instead its directly cleaning up the connection by sending RST, ACK.</p>
+<img src="images/tcp-img-9.png" alt="tcp-img-9" style="max-width:100%; margin: 1em 0;" />
 <p>In such scenarios like this and above RST is not a big issue but if there is a RST after your Client Hello or after sending initial HTTP request etc then there could be an issue with the network.</p>
 <p>RSTs at the end are fine because that would be TCP cleaning up the connection after all data transmitting.</p>
 <p>Part – 10 - TCP – SACK</p>
@@ -167,8 +176,10 @@
 <p>DUPACK will have the previous ACK number till the receiver received the data and then after that which packet was received, that sequence number will be mentioned in SLE value and till where it received it will be in SLR value.</p>
 <p>Hence the sender will understand which packet exactly need to be resent.</p>
 <p>In the left capture you can see in the 52nd packet the Seq is 45261 and Next seq is 46721 but the next packet sent from the server to client is seq 59861.</p>
+<img src="images/tcp-img-10.png" alt="tcp-img-10" style="max-width:100%; margin: 1em 0;" />
 <p>The client was supposed to receive the seq 46721, instead it received 59861. So here there is gap between 46721 &amp; 59861.</p>
 <p>So, in the next packet – Client sends a DUPACK, that is it sends the ACK for 46721 (it has already send this ACK in packet 53) , In this DUPACK the client will mention I have received everything up to 46721 and then after that I have received 59861 to 61321 like in below capture.</p>
+<img src="images/tcp-img-11.png" alt="tcp-img-11" style="max-width:100%; margin: 1em 0;" />
 <p>Then the server still sends the next seq in packet 56, Seq 61321 and Next Seq 62781 but still client hasn’t received seq 46721</p>
 <p>Again, another DUPACK#2 is sent, with ACK #46721 and then it increases the SLR to 62781, ie SLE 61321 &amp; SLR 62781</p>
 <p>This repeats until the Fast retransmission happens and the client gets the seq number 46721, Next Seq # 48181</p>
@@ -178,7 +189,6 @@
 <p>Finding TCP Delays</p>
 <p>Tips &amp; Tricks – What makes an application slow?</p>
 <p>Troubleshooting slow file transfer in Wireshark</p>
-            <p><em>Place images (tcp-img-1.png to tcp-img-26.png) inline using &lt;img src="images/tcp-img-X.png" /&gt; in the correct positions as needed.</em></p>
         </section>
     </div>
 
